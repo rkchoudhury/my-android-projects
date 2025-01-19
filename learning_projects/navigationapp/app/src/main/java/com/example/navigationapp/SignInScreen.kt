@@ -9,16 +9,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun SignInScreen() {
+fun SignInScreen(navController: NavController) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(text = "Sign In")
-        Button(onClick = {}) {
+        Button(onClick = { navController.navigate("dashboard") }) {
             Text(text = "Sign In")
         }
     }
@@ -27,5 +29,6 @@ fun SignInScreen() {
 @Preview(showSystemUi = true)
 @Composable
 fun SignInScreenPreview() {
-    SignInScreen()
+    val navController = rememberNavController()
+    SignInScreen(navController)
 }
