@@ -28,9 +28,16 @@ fun AppNavigation() {
     val navController = rememberNavController()
 
     // Then, you define a NavHost and specify a start destination
-    NavHost(navController = navController, startDestination = "signIn") {
-        composable("signIn") { SignInScreen(navController) }
-        composable("dashboard") { DashboardScreen() }
+    NavHost(navController = navController, startDestination = Screen.SignIn.route) {
+        composable(Screen.SignIn.route) { SignInScreen(navController) }
+        composable("${Screen.Dashboard.route}/{name}") {
+            val name = it.arguments?.getString("name") ?: "--"
+            DashboardScreen(name)
+        }
+        composable("${Screen.Home.route}/{name}") {
+            HomeScreen(it.arguments)
+        }
+
     }
 
 }

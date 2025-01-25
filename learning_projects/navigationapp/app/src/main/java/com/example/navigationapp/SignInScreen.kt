@@ -14,14 +14,19 @@ import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun SignInScreen(navController: NavController) {
+    val name = "rakesh"
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(text = "Sign In")
-        Button(onClick = { navController.navigate("dashboard") }) {
+        Button(onClick = { navController.navigate("${Screen.Dashboard.route}/$name") }) {
             Text(text = "Sign In")
+        }
+
+        Button(onClick = { navController.navigate("${Screen.Home.route}/$name") }) {
+            Text(text = "Home")
         }
     }
 }

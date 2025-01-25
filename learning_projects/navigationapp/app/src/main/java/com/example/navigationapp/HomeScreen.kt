@@ -1,5 +1,6 @@
 package com.example.navigationapp
 
+import android.os.Bundle
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,19 +11,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-fun DashboardScreen(name: String) {
+fun HomeScreen(args: Bundle?) {
+    val name = args?.getString("name") ?: "--"
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
-        Text(text = "Welcome $name")
-        Text(text = "Dashboard")
+        Text(text = "Welcome home $name!")
     }
 }
 
 @Preview(showSystemUi = true)
 @Composable
-fun DashboardScreenPreview() {
-    DashboardScreen("Rakesh Choudhury")
+fun HomeScreenPreview() {
+    HomeScreen(null)
 }
