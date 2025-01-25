@@ -38,6 +38,14 @@ fun AppNavigation() {
             HomeScreen(it.arguments)
         }
 
+        composable(Screen.Setting.route) {
+            val user =
+                navController.previousBackStackEntry?.savedStateHandle?.get<User>("user")
+                    ?: User("", 1, "")
+            SettingScreen(user)
+
+//            SettingScreen2(navController)
+        }
     }
 
 }

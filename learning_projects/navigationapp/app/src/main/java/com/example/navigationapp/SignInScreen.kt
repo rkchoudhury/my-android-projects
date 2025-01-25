@@ -28,6 +28,14 @@ fun SignInScreen(navController: NavController) {
         Button(onClick = { navController.navigate("${Screen.Home.route}/$name") }) {
             Text(text = "Home")
         }
+
+        Button(onClick = {
+            val user = User("Rakesh Choudhury", 28, "31/05/1996")
+            navController.currentBackStackEntry?.savedStateHandle?.set("user", user)
+            navController.navigate(Screen.Setting.route)
+        }) {
+            Text(text = "Settings")
+        }
     }
 }
 
