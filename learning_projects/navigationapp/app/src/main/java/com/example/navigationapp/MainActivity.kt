@@ -46,6 +46,9 @@ fun AppNavigation() {
 
 //            SettingScreen2(navController)
         }
+        composable(Screen.Profile.route) {
+            ProfileScreen(navController)
+        }
     }
 
 }
