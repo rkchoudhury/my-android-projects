@@ -12,6 +12,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AndroidArchitectures">
         <activity
+            android:name=".mvvm.MVVMActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mvp.MVPActivity"
+            android:exported="false" />
+        <activity
+            android:name=".mvc.MVCActivity"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
