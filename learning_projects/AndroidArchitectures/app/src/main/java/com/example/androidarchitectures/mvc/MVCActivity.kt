@@ -3,8 +3,11 @@ package com.example.androidarchitectures.mvc
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -16,6 +19,8 @@ class MVCActivity : AppCompatActivity() {
     private lateinit var list: ListView
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var controller: CountryController
+    private lateinit var retryButton: Button
+    private lateinit var progress: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,6 +30,8 @@ class MVCActivity : AppCompatActivity() {
         controller = CountryController(this)
 
         list = findViewById(R.id.list)
+        retryButton = findViewById(R.id.retryButton)
+        progress = findViewById(R.id.progress)
         adapter = ArrayAdapter(this, R.layout.row_layout, R.id.listText, listValues)
 
         list.setAdapter(adapter)
@@ -37,11 +44,24 @@ class MVCActivity : AppCompatActivity() {
     fun setValues(values: List<String>) {
         listValues.clear()
         listValues.addAll(values)
+        retryButton.visibility = View.GONE
+        progress.visibility = View.GONE
+        list.visibility = View.VISIBLE
         adapter.notifyDataSetChanged()
     }
 
     fun onError() {
+        Toast.makeText(this, getString(R.string.error_message), Toast.LENGTH_SHORT).show()
+        progress.visibility = View.GONE
+        list.visibility = View.GONE
+        retryButton.visibility = View.VISIBLE
+    }
 
+    fun onRetry(view: View) {
+        controller.onRefresh()
+        list.visibility = View.GONE
+        retryButton.visibility = View.GONE
+        progress.visibility = View.VISIBLE
     }
 
     companion object {
