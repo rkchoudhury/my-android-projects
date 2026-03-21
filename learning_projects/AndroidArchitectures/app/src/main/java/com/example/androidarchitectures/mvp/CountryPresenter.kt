@@ -1,13 +1,15 @@
-package com.example.androidarchitectures.mvc
+package com.example.androidarchitectures.mvp
 
 import com.example.androidarchitectures.model.CountryService
 import com.example.androidarchitectures.model.countryService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.*
+import kotlinx.coroutines.withContext
 
-class CountryController(mvcActivity: MVCActivity) {
-
-    private val view: MVCActivity = mvcActivity
+class CountryPresenter(view: View) {
+    private val view = view
     private val service: CountryService = countryService
 
     private val scope = CoroutineScope(Dispatchers.IO)
@@ -39,5 +41,10 @@ class CountryController(mvcActivity: MVCActivity) {
     // Call this to cancel coroutines when the Activity is destroyed
     fun onDestroy() {
         scope.cancel()
+    }
+
+    interface View {
+        fun setValues(countries: List<String>)
+        fun onError()
     }
 }
