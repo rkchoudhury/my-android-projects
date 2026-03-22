@@ -35,7 +35,7 @@ class MVVMActivity : AppCompatActivity() {
         progress = findViewById(R.id.progress)
         adapter = ArrayAdapter(this, R.layout.row_layout, R.id.listText, listValues)
 
-        list.setAdapter(adapter)
+        list.adapter = adapter
         list.setOnItemClickListener { parent, view, position, id ->
             Toast.makeText(this, "You clicked " + listValues.get(position), Toast.LENGTH_SHORT)
                 .show()
@@ -51,7 +51,7 @@ class MVVMActivity : AppCompatActivity() {
                 listValues.addAll(countries)
                 list.visibility = View.VISIBLE
                 adapter.notifyDataSetChanged()
-            }  else {
+            } else {
                 list.visibility = View.GONE
             }
         }
@@ -79,10 +79,5 @@ class MVVMActivity : AppCompatActivity() {
         fun getIntent(context: Context): Intent {
             return Intent(context, MVVMActivity::class.java)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.onDestroy()
     }
 }

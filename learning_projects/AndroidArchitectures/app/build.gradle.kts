@@ -50,5 +50,5 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-gson:3.0.0")
 
     // ViewModel dependencies
-    implementation("androidx.lifecycle:lifecycle-viewmodel:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
 }
