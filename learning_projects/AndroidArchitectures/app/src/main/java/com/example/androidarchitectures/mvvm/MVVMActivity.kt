@@ -69,10 +69,10 @@ class MVVMActivity : AppCompatActivity() {
     }
 
     fun onRetry(view: View) {
-        viewModel.onRefresh()
         list.visibility = View.GONE
         retryButton.visibility = View.GONE
         progress.visibility = View.VISIBLE
+        viewModel.onRefresh()
     }
 
     companion object {
