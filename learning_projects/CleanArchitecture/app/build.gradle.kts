@@ -40,6 +40,10 @@ android {
 }
 
 dependencies {
+    // Added the dependencies over the core module here
+    // So the files in app module will access the core module files
+    implementation(project(":core"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
