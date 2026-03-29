@@ -8,10 +8,9 @@ import com.example.cleanarchitecture.ui.theme.CleanArchitectureTheme
 
 
 @Composable
-fun NoteScreen(name: String, modifier: Modifier = Modifier) {
+fun NoteScreen() {
     Text(
-        text = "Hello $name!",
-        modifier = modifier
+        text = "Hello",
     )
 }
 
@@ -19,6 +18,6 @@ fun NoteScreen(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun NoteScreenPreview() {
     CleanArchitectureTheme {
-        NoteScreen("Android")
+        NoteScreen()
     }
 }
