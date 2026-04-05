@@ -2,8 +2,10 @@ package com.example.cleanarchitecture.presentation.screens.note
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -27,7 +29,12 @@ import com.example.cleanarchitecture.presentation.common.NaviBar
 @Composable
 fun NoteScreen(navController: NavController) {
     Box(modifier = Modifier.fillMaxSize()) {
-        Body(navController)
+        Column {
+            NaviBar(title = "New Note", showBack = true, onClick = {
+                navController.popBackStack()
+            })
+            Body()
+        }
         FloatingButton(
             icon = Icons.Filled.Done,
             onClick = {
@@ -43,14 +50,11 @@ fun NoteScreen(navController: NavController) {
 }
 
 @Composable
-fun Body(navController: NavController) {
+fun Body() {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
-    Column {
-        NaviBar(title = "New Note", showBack = true, onClick = {
-            navController.popBackStack()
-        })
+    Column(modifier = Modifier.padding(20.dp)) {
         TextField(
             value = title,
             onValueChange = {
@@ -60,6 +64,7 @@ fun Body(navController: NavController) {
             singleLine = true,
             modifier = Modifier.fillMaxWidth()
         )
+        Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = description,
             onValueChange = {

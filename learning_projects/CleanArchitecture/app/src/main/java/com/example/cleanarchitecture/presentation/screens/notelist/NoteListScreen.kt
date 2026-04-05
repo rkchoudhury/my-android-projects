@@ -32,7 +32,6 @@ fun NoteListScreen(navController: NavController) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(0.dp, 0.dp, 0.dp, 0.dp)
             ) {
                 items(items = list, itemContent = { item ->
                     Card(title = item, content = item.repeat(10))
