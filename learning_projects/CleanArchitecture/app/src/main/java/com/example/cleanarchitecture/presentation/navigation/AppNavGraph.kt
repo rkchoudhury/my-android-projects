@@ -12,7 +12,7 @@ fun AppNavGraph() {
     val navController = rememberNavController()
 
     NavHost(navController = navController, startDestination = Route.NoteList.name) {
-        composable(Route.NoteList.name) { NoteListScreen() }
-        composable(Route.Note.name) { NoteScreen() }
+        composable(Route.NoteList.name) { NoteListScreen(navController) }
+        composable(Route.Note.name) { NoteScreen(navController) }
     }
 }
