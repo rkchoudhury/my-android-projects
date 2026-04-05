@@ -3,4 +3,7 @@ plugins {
     alias(libs.plugins.android.application) apply false
     alias(libs.plugins.kotlin.compose) apply false
     alias(libs.plugins.jetbrains.kotlin.jvm) apply false
+
+    // KSP (Kotlin Symbol Processing) - Used in Room for fast compilation
+    id("com.google.devtools.ksp") version "2.3.4" apply false
 }
