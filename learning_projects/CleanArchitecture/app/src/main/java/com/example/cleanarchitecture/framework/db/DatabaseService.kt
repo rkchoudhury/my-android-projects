@@ -16,7 +16,7 @@ abstract class DatabaseService : RoomDatabase() {
 
         private fun create(context: Context): DatabaseService =
             Room.databaseBuilder(context, DatabaseService::class.java, DATABASE_NAME)
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(false)
                 .build()
 
 
