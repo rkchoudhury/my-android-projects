@@ -27,7 +27,7 @@ fun NoteListScreen(navController: NavController) {
     )
 
     Column {
-        NaviBar("Notes", navController)
+        NaviBar("Notes") { navController.popBackStack() }
         Box(modifier = Modifier.fillMaxSize()) {
             LazyColumn(
                 modifier = Modifier

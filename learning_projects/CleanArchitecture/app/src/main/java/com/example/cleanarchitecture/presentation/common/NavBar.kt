@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Icon
@@ -19,12 +18,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.cleanarchitecture.R
 
 @Composable
-fun NaviBar(title: String, navController: NavController) {
+fun NaviBar(title: String, showBack: Boolean = false, onClick: () -> Unit = {}) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -32,16 +29,18 @@ fun NaviBar(title: String, navController: NavController) {
             .background(colorResource(R.color.black)),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-            contentDescription = "back_button",
-            tint = colorResource(R.color.white),
-            modifier = Modifier.clickable(
-                onClick = {
-                    navController.popBackStack()
-                }
+        if (showBack) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                contentDescription = "back_button",
+                tint = colorResource(R.color.white),
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onClick()
+                    }
+                )
             )
-        )
+        }
         Text(
             text = title,
             modifier = Modifier
@@ -57,6 +56,5 @@ fun NaviBar(title: String, navController: NavController) {
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
 fun PreviewNaviBar() {
-    val navController = rememberNavController()
-    NaviBar("Movie Preview", navController)
+    NaviBar("Movie Preview")
 }

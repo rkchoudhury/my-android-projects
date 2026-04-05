@@ -22,7 +22,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.cleanarchitecture.presentation.common.FloatingButton
 import com.example.cleanarchitecture.presentation.common.NaviBar
-import com.example.cleanarchitecture.presentation.navigation.Route
 
 
 @Composable
@@ -32,7 +31,7 @@ fun NoteScreen(navController: NavController) {
         FloatingButton(
             icon = Icons.Filled.Done,
             onClick = {
-                navController.navigate(Route.Note.name)
+                navController.popBackStack()
             },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
@@ -47,10 +46,11 @@ fun NoteScreen(navController: NavController) {
 fun Body(navController: NavController) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    val navController = rememberNavController()
 
     Column {
-        NaviBar("New Note", navController)
+        NaviBar(title = "New Note", showBack = true, onClick = {
+            navController.popBackStack()
+        })
         TextField(
             value = title,
             onValueChange = {
