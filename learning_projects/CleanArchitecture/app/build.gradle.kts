@@ -73,4 +73,7 @@ dependencies {
     implementation("androidx.room:room-ktx:${room_version}") // Kotlin extensions and Coroutines support for Room
     ksp("androidx.room:room-compiler:$room_version") // Kotlin Symbol Processing (KSP)
 
+    // ViewModel for Compose and LiveData observation in Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.compose.runtime:runtime-livedata")
 }
