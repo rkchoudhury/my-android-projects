@@ -29,12 +29,19 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
 
     // LiveData
     val saved: MutableLiveData<Boolean> = MutableLiveData()
+    val selectedNote: MutableLiveData<Note?> = MutableLiveData()
 
     fun saveNote(note: Note) {
         coroutineScope.launch {
             useCases.addNote(note)
-//            saved.value = true
             saved.postValue(true)
+        }
+    }
+
+    fun getNote(noteId: Long) {
+        coroutineScope.launch {
+            val note = useCases.getNote(noteId)
+            selectedNote.postValue(note)
         }
     }
 }

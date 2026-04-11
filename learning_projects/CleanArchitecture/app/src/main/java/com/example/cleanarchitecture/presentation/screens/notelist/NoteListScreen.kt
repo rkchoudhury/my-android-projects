@@ -51,7 +51,13 @@ fun NoteListScreen(navController: NavController) {
                         items(
                             items = it.sortedByDescending { it.updateTime },
                             itemContent = { item ->
-                                Card(title = item.title, content = item.content)
+                                Card(title = item.title, content = item.content, {
+                                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                                        "id",
+                                        item.id
+                                    )
+                                    navController.navigate(Route.Note.name)
+                                })
                             })
                     }
                 }
@@ -60,6 +66,7 @@ fun NoteListScreen(navController: NavController) {
             FloatingButton(
                 Icons.Filled.Add,
                 onClick = {
+                    navController.currentBackStackEntry?.savedStateHandle?.set("id", 0L)
                     navController.navigate(Route.Note.name)
                 },
                 modifier = Modifier

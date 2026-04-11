@@ -37,14 +37,22 @@ import com.example.core.data.Note
 
 @Composable
 fun NoteScreen(navController: NavController) {
+    val selectedNoteId = navController.previousBackStackEntry?.savedStateHandle?.get<Long>("id")
     val viewModel: NoteViewModel = viewModel()
     val context = LocalContext.current
     val currentNote = remember { Note("", "", 0L, 0L) }
+
+    LaunchedEffect(selectedNoteId) {
+        if (selectedNoteId != null && selectedNoteId != 0L) {
+            viewModel.getNote(selectedNoteId)
+        }
+    }
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
     val saved by viewModel.saved.observeAsState()
+    val selectedNote by viewModel.selectedNote.observeAsState()
 
     LaunchedEffect(saved) {
         saved?.let {
@@ -53,6 +61,20 @@ fun NoteScreen(navController: NavController) {
                 navController.popBackStack()
             } else {
                 Toast.makeText(context, "Something went wrong!", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    LaunchedEffect(selectedNote) {
+        selectedNote?.let {
+            if (it.id != 0L) {
+                currentNote.id = it.id
+                title = it.title
+                description = it.content
+            } else {
+                currentNote.id = 0L
+                title = ""
+                description = ""
             }
         }
     }
