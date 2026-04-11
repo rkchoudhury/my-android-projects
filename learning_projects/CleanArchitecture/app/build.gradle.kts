@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+
+    // KSP (Kotlin Symbol Processing) - Used in Room for fast compilation
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -63,4 +66,14 @@ dependencies {
     // Navigation Compose
     val navVersion = "2.9.7"
     implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // room database dependencies
+    val room_version = "2.8.4"
+    implementation("androidx.room:room-runtime:${room_version}")
+    implementation("androidx.room:room-ktx:${room_version}") // Kotlin extensions and Coroutines support for Room
+    ksp("androidx.room:room-compiler:$room_version") // Kotlin Symbol Processing (KSP)
+
+    // ViewModel for Compose and LiveData observation in Compose
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
+    implementation("androidx.compose.runtime:runtime-livedata")
 }
