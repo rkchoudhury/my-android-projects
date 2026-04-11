@@ -81,15 +81,14 @@ fun NoteScreen(navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            NaviBar(title = "New Note", showBack = true, onClick = {
+            NaviBar(title = "New Note", showLeftIcon = true, showRightIcon = true, onLeftClick = {
                 navController.popBackStack()
-            })
+            }, onRightClick = {})
             Body(
                 title = title,
                 description = description,
                 onTitleChange = { title = it },
-                onDescriptionChange = { description = it }
-            )
+                onDescriptionChange = { description = it })
         }
         FloatingButton(
             icon = Icons.Filled.Done,
