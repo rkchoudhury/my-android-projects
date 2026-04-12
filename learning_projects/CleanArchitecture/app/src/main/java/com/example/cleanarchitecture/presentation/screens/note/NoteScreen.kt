@@ -37,20 +37,18 @@ import com.example.core.data.Note
 
 @Composable
 fun NoteScreen(navController: NavController) {
-    val selectedNoteId = navController.previousBackStackEntry?.savedStateHandle?.get<Long>("id")
+    // Retrieving the note id from the navigation params
+    val noteId = navController.previousBackStackEntry?.savedStateHandle?.get<Long>("id")
+
     val viewModel: NoteViewModel = viewModel()
     val context = LocalContext.current
-    val currentNote = remember { Note("", "", 0L, 0L) }
+    val currentNote = remember { Note("", "", 0L, 0L, id = 0L) }
 
-    LaunchedEffect(selectedNoteId) {
-        if (selectedNoteId != null && selectedNoteId != 0L) {
-            viewModel.getNote(selectedNoteId)
-        }
-    }
-
+    // Note Screen - State variables
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
+    // Observing the viewModel state
     val saved by viewModel.saved.observeAsState()
     val selectedNote by viewModel.selectedNote.observeAsState()
 
@@ -67,20 +65,21 @@ fun NoteScreen(navController: NavController) {
 
     LaunchedEffect(selectedNote) {
         selectedNote?.let {
-            if (it.id != 0L) {
-                currentNote.id = it.id
-                currentNote.title = it.title
-                currentNote.content = it.content
-                currentNote.updateTime = it.updateTime
-                currentNote.creationTime = it.creationTime
+            currentNote.id = it.id
+            currentNote.title = it.title
+            currentNote.content = it.content
+            currentNote.updateTime = it.updateTime
+            currentNote.creationTime = it.creationTime
 
-                title = it.title
-                description = it.content
-            } else {
-                currentNote.id = 0L
-                title = ""
-                description = ""
-            }
+            title = it.title
+            description = it.content
+        }
+    }
+
+    // Getting the selected node from the DB
+    LaunchedEffect(noteId) {
+        if (noteId != null && noteId != 0L) {
+            viewModel.getNote(noteId)
         }
     }
 
