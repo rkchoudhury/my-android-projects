@@ -78,6 +78,7 @@ dependencies {
     implementation("androidx.compose.runtime:runtime-livedata")
 
     // Dragger package used for Dependency Injection (New - Use Hilt for dependency injection)
-    val daggerVersion = "2.14.1"
+    val daggerVersion = "2.51.1"
     implementation("com.google.dagger:dagger:${daggerVersion}")
+    ksp("com.google.dagger:dagger-compiler:${daggerVersion}")
 }
