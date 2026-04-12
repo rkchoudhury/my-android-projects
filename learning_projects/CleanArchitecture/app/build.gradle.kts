@@ -76,4 +76,8 @@ dependencies {
     // ViewModel for Compose and LiveData observation in Compose
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
     implementation("androidx.compose.runtime:runtime-livedata")
+
+    // Dragger package used for Dependency Injection (New - Use Hilt for dependency injection)
+    val daggerVersion = "2.14.1"
+    implementation("com.google.dagger:dagger:${daggerVersion}")
 }
