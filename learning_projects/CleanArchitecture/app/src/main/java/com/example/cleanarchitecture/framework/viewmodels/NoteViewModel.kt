@@ -48,6 +48,7 @@ class NoteViewModel(application: Application) : AndroidViewModel(application) {
     fun deleteNote(note: Note) {
         coroutineScope.launch {
             useCases.removeNote(note)
+            saved.postValue(true)
         }
     }
 }

@@ -85,12 +85,18 @@ fun NoteScreen(navController: NavController) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            NaviBar(title = "New Note", showLeftIcon = true, showRightIcon = true, onLeftClick = {
-                navController.popBackStack()
-            }, onRightClick = {
-                viewModel.deleteNote(currentNote)
-                navController.popBackStack()
-            })
+            NaviBar(
+                title = "New Note",
+                showLeftIcon = true,
+                showRightIcon = true,
+                onLeftClick = {
+                    navController.popBackStack()
+                },
+                onRightClick = {
+                    if (noteId != 0L) {
+                        viewModel.deleteNote(currentNote)
+                    }
+                })
             Body(
                 title = title,
                 description = description,
