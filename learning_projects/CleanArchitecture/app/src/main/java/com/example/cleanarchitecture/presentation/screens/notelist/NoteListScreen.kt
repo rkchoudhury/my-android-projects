@@ -51,7 +51,7 @@ fun NoteListScreen(navController: NavController) {
                         items(
                             items = it.sortedByDescending { it.updateTime },
                             itemContent = { item ->
-                                Card(title = item.title, content = item.content, {
+                                Card(title = item.title, content = item.content, item.updateTime, {
                                     navController.currentBackStackEntry?.savedStateHandle?.set(
                                         "id",
                                         item.id
