@@ -69,6 +69,11 @@ fun NoteScreen(navController: NavController) {
         selectedNote?.let {
             if (it.id != 0L) {
                 currentNote.id = it.id
+                currentNote.title = it.title
+                currentNote.content = it.content
+                currentNote.updateTime = it.updateTime
+                currentNote.creationTime = it.creationTime
+
                 title = it.title
                 description = it.content
             } else {
@@ -83,7 +88,10 @@ fun NoteScreen(navController: NavController) {
         Column {
             NaviBar(title = "New Note", showLeftIcon = true, showRightIcon = true, onLeftClick = {
                 navController.popBackStack()
-            }, onRightClick = {})
+            }, onRightClick = {
+                viewModel.deleteNote(currentNote)
+                navController.popBackStack()
+            })
             Body(
                 title = title,
                 description = description,
