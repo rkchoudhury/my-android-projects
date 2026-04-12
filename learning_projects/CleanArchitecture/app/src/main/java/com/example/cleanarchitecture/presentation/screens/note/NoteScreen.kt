@@ -37,14 +37,22 @@ import com.example.core.data.Note
 
 @Composable
 fun NoteScreen(navController: NavController) {
+    val selectedNoteId = navController.previousBackStackEntry?.savedStateHandle?.get<Long>("id")
     val viewModel: NoteViewModel = viewModel()
     val context = LocalContext.current
     val currentNote = remember { Note("", "", 0L, 0L) }
+
+    LaunchedEffect(selectedNoteId) {
+        if (selectedNoteId != null && selectedNoteId != 0L) {
+            viewModel.getNote(selectedNoteId)
+        }
+    }
 
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
 
     val saved by viewModel.saved.observeAsState()
+    val selectedNote by viewModel.selectedNote.observeAsState()
 
     LaunchedEffect(saved) {
         saved?.let {
@@ -57,17 +65,38 @@ fun NoteScreen(navController: NavController) {
         }
     }
 
+    LaunchedEffect(selectedNote) {
+        selectedNote?.let {
+            if (it.id != 0L) {
+                currentNote.id = it.id
+                currentNote.title = it.title
+                currentNote.content = it.content
+                currentNote.updateTime = it.updateTime
+                currentNote.creationTime = it.creationTime
+
+                title = it.title
+                description = it.content
+            } else {
+                currentNote.id = 0L
+                title = ""
+                description = ""
+            }
+        }
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column {
-            NaviBar(title = "New Note", showBack = true, onClick = {
+            NaviBar(title = "New Note", showLeftIcon = true, showRightIcon = true, onLeftClick = {
+                navController.popBackStack()
+            }, onRightClick = {
+                viewModel.deleteNote(currentNote)
                 navController.popBackStack()
             })
             Body(
                 title = title,
                 description = description,
                 onTitleChange = { title = it },
-                onDescriptionChange = { description = it }
-            )
+                onDescriptionChange = { description = it })
         }
         FloatingButton(
             icon = Icons.Filled.Done,

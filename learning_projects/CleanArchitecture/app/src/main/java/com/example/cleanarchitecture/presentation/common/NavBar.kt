@@ -2,11 +2,14 @@ package com.example.cleanarchitecture.presentation.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,22 +24,30 @@ import androidx.compose.ui.unit.sp
 import com.example.cleanarchitecture.R
 
 @Composable
-fun NaviBar(title: String, showBack: Boolean = false, onClick: () -> Unit = {}) {
+fun NaviBar(
+    title: String,
+    showLeftIcon: Boolean = false,
+    showRightIcon: Boolean = false,
+    onLeftClick: () -> Unit = {},
+    onRightClick: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(50.dp)
-            .background(colorResource(R.color.black)),
-        verticalAlignment = Alignment.CenterVertically
+            .background(colorResource(R.color.black))
+            .padding(10.dp, 0.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (showBack) {
+        if (showLeftIcon) {
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                 contentDescription = "back_button",
                 tint = colorResource(R.color.white),
                 modifier = Modifier.clickable(
                     onClick = {
-                        onClick()
+                        onLeftClick()
                     }
                 )
             )
@@ -44,17 +55,29 @@ fun NaviBar(title: String, showBack: Boolean = false, onClick: () -> Unit = {}) 
         Text(
             text = title,
             modifier = Modifier
-                .fillMaxWidth(),
+                .weight(1f),
             textAlign = TextAlign.Center,
             fontSize = 16.sp,
             fontWeight = FontWeight.Bold,
             color = colorResource(R.color.white),
         )
+        if (showRightIcon) {
+            Icon(
+                imageVector = Icons.Filled.Delete,
+                contentDescription = "delete_button",
+                tint = colorResource(R.color.white),
+                modifier = Modifier.clickable(
+                    onClick = {
+                        onRightClick()
+                    }
+                )
+            )
+        }
     }
 }
 
 @Preview(showSystemUi = false, showBackground = true)
 @Composable
 fun PreviewNaviBar() {
-    NaviBar("Movie Preview")
+    NaviBar("Movie Preview", true, true)
 }
