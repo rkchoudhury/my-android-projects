@@ -4,12 +4,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
 import com.example.movieappcleanarchitecture.presentation.viewmodels.MovieViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun DashboardScreen() {
@@ -20,7 +19,7 @@ fun DashboardScreen() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        MovieGrid(movieList)
+        MovieGrid(movieList.list)
     }
 }
 

@@ -59,4 +59,8 @@ dependencies {
     // Retrofit Dependencies - Used for API calling
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // ViewModel for Compose and LiveData observation in Compose
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.compose.runtime.livedata)
 }
