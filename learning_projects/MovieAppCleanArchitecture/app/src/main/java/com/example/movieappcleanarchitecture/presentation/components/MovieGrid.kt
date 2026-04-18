@@ -11,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.example.movieappcleanarchitecture.data.Movie
 
 @Composable
-fun MovieGrid(movieList: List<Movie>, content: @Composable () -> Unit = {}) {
+fun MovieGrid(movieList: List<Movie>) {
     val cardModifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
 
     LazyVerticalGrid(
@@ -21,9 +21,6 @@ fun MovieGrid(movieList: List<Movie>, content: @Composable () -> Unit = {}) {
     ) {
         items(movieList) { movie: Movie ->
             MovieCard(movie, cardModifier)
-        }
-        item {
-            content()
         }
     }
 }
