@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.common.CDN_IMAGE_URL
-import com.example.movieappcleanarchitecture.data.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 
 @Composable
 fun MovieCard(movie: Movie) {
@@ -43,8 +43,8 @@ fun MovieCard(movie: Movie) {
         horizontalAlignment = Alignment.Start,
     ) {
         Image(
-            painter = rememberAsyncImagePainter("$CDN_IMAGE_URL${movie.poster_path}"),
-            contentDescription = movie.original_title,
+            painter = rememberAsyncImagePainter("$CDN_IMAGE_URL${movie.posterPath}"),
+            contentDescription = movie.originalTitle,
             alignment = Alignment.TopStart,
             modifier = Modifier
                 .height(165.dp)
@@ -72,19 +72,19 @@ fun MovieCard(movie: Movie) {
 fun MovieCardPreview() {
     val movie = Movie(
         adult = false,
-        backdrop_path = "/kEYWal656zP5Q2Tohm91aw6orlT.jpg",
-        genre_ids = listOf(18, 35, 10749),
+        backdropPath = "/kEYWal656zP5Q2Tohm91aw6orlT.jpg",
+        genreIds = listOf(18, 35, 10749),
         id = 1064213,
-        original_language = "en",
-        original_title = "Anora",
+        originalLanguage = "en",
+        originalTitle = "Anora",
         overview = "A young sex worker from Brooklyn gets her chance at a Cinderella story when she meets and impulsively marries the son of an oligarch. Once the news reaches Russia, her fairytale is threatened as his parents set out to get the marriage annulled.",
         popularity = 530.515,
-        poster_path = "/7MrgIUeq0DD2iF7GR6wqJfYZNeC.jpg",
-        release_date = "2024-10-14",
+        posterPath = "/7MrgIUeq0DD2iF7GR6wqJfYZNeC.jpg",
+        releaseDate = "2024-10-14",
         title = "Anora",
         video = false,
-        vote_average = 7.1,
-        vote_count = 960
+        voteAverage = 7.1,
+        voteCount = 960
     )
 
     MovieCard(movie)

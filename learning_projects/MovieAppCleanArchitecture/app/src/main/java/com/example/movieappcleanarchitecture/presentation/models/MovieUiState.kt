@@ -1,6 +1,6 @@
 package com.example.movieappcleanarchitecture.presentation.models
 
-import com.example.movieappcleanarchitecture.data.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 
 data class MovieState(
     val list: List<Movie> = emptyList(),

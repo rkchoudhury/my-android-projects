@@ -4,6 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieappcleanarchitecture.data.repository.impl.MovieRepositoryImpl
+import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
+import com.example.movieappcleanarchitecture.domain.usecase.UseCases
 import com.example.movieappcleanarchitecture.presentation.models.MovieState
 import com.example.movieappcleanarchitecture.services.movieService
 import kotlinx.coroutines.launch
@@ -15,6 +18,9 @@ class MovieViewModel : ViewModel() {
     // This is the public variable which can be accessed from the outside
     val moviesState: State<MovieState> = _moviesState
 
+    val movieRepository = MovieRepositoryImpl(movieService)
+    val useCases = UseCases(GetPopularMoviesUseCase(movieRepository))
+
     init {
         fetchMovies()
     }
@@ -22,9 +28,9 @@ class MovieViewModel : ViewModel() {
     private fun fetchMovies() {
         viewModelScope.launch {
             try {
-                val response = movieService.getPopularMovies()
+                val response = useCases.getPopularMovies()
                 _moviesState.value = _moviesState.value.copy(
-                    list = response.results,
+                    list = response,
                     loading = false,
                     error = null
                 )
