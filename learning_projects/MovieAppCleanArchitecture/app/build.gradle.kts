@@ -63,4 +63,7 @@ dependencies {
     // ViewModel for Compose and LiveData observation in Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.compose.runtime.livedata)
+
+    // External Image Loading Library
+    implementation(libs.coil.compose)
 }

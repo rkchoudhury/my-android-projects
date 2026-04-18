@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.data.Movie
 
@@ -41,16 +42,16 @@ fun MovieCard(movie: Movie, modifier: Modifier) {
             },
         horizontalAlignment = Alignment.Start,
     ) {
-//        Image(
-//            painter = rememberAsyncImagePainter("$CDN_IMAGE_URL${movie.poster_path}"),
-//            contentDescription = movie.original_title,
-//            alignment = Alignment.TopStart,
-//            modifier = Modifier
-//                .height(165.dp)
-//                .width(125.dp)
-//                .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)),
-//            contentScale = ContentScale.FillBounds
-//        )
+        Image(
+            painter = rememberAsyncImagePainter("$CDN_IMAGE_URL${movie.poster_path}"),
+            contentDescription = movie.original_title,
+            alignment = Alignment.TopStart,
+            modifier = Modifier
+                .height(165.dp)
+                .width(125.dp)
+                .clip(RoundedCornerShape(topStart = 5.dp, topEnd = 5.dp)),
+            contentScale = ContentScale.FillBounds
+        )
         Text(
             text = movie.title,
             color = colorResource(R.color.gold),
