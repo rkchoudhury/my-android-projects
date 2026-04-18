@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movieappcleanarchitecture.presentation.components.LoadingIndicator
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
 import com.example.movieappcleanarchitecture.presentation.viewmodels.MovieViewModel
 
@@ -19,7 +20,15 @@ fun DashboardScreen() {
         modifier = Modifier
             .fillMaxSize()
     ) {
-        MovieGrid(movieList.list)
+        when {
+            movieList.loading -> {
+                LoadingIndicator()
+            }
+
+            else -> {
+                MovieGrid(movieList.list)
+            }
+        }
     }
 }
 
