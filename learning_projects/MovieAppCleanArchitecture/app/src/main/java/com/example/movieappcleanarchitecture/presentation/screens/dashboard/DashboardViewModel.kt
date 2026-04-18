@@ -4,11 +4,11 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieappcleanarchitecture.data.remote.api.impl.movieService
 import com.example.movieappcleanarchitecture.data.repository.impl.MovieRepositoryImpl
 import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
 import com.example.movieappcleanarchitecture.domain.usecase.UseCases
 import com.example.movieappcleanarchitecture.presentation.models.MovieState
-import com.example.movieappcleanarchitecture.services.movieService
 import kotlinx.coroutines.launch
 
 class MovieViewModel : ViewModel() {
