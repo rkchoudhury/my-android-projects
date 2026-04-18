@@ -10,7 +10,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movieappcleanarchitecture.presentation.components.LoadingIndicator
 import com.example.movieappcleanarchitecture.presentation.components.MovieError
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
-import com.example.movieappcleanarchitecture.presentation.viewmodels.MovieViewModel
 
 @Composable
 fun DashboardScreen() {
