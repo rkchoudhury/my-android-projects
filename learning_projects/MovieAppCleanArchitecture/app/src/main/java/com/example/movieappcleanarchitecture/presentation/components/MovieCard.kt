@@ -24,12 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movieappcleanarchitecture.R
+import com.example.movieappcleanarchitecture.common.CDN_IMAGE_URL
 import com.example.movieappcleanarchitecture.data.Movie
 
 @Composable
 fun MovieCard(movie: Movie) {
-    val CDN_IMAGE_URL = "https://image.tmdb.org/t/p/w500/"
-
     Column(
         modifier = Modifier
             .padding(bottom = 10.dp, end = 10.dp)
