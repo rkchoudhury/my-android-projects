@@ -27,11 +27,12 @@ import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.data.Movie
 
 @Composable
-fun MovieCard(movie: Movie, modifier: Modifier) {
+fun MovieCard(movie: Movie) {
     val CDN_IMAGE_URL = "https://image.tmdb.org/t/p/w500/"
 
     Column(
-        modifier = modifier
+        modifier = Modifier
+            .padding(bottom = 10.dp, end = 10.dp)
             .width(125.dp)
             .background(
                 color = colorResource(R.color.grey_two),
@@ -87,5 +88,5 @@ fun MovieCardPreview() {
         vote_count = 960
     )
 
-    MovieCard(movie, modifier = Modifier)
+    MovieCard(movie)
 }

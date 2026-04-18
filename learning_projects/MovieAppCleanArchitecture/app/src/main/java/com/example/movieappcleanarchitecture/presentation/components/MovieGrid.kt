@@ -12,15 +12,12 @@ import com.example.movieappcleanarchitecture.data.Movie
 
 @Composable
 fun MovieGrid(movieList: List<Movie>) {
-    val cardModifier = Modifier.padding(bottom = 10.dp, end = 10.dp)
-
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
-        modifier = Modifier
-            .padding(start = 20.dp, end = 10.dp, top = 10.dp)
+        modifier = Modifier.padding(start = 20.dp, end = 10.dp, top = 10.dp)
     ) {
         items(movieList) { movie: Movie ->
-            MovieCard(movie, cardModifier)
+            MovieCard(movie)
         }
     }
 }
