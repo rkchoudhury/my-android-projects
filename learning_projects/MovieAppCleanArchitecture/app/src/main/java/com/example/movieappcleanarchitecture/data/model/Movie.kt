@@ -1,8 +1,8 @@
-package com.example.movieappcleanarchitecture.data.remote.dto
+package com.example.movieappcleanarchitecture.data.model
 
 import com.google.gson.annotations.SerializedName
 
-data class MovieDto(
+data class Movie(
     val adult: Boolean,
     @SerializedName("backdrop_path")
     val backdropPath: String,

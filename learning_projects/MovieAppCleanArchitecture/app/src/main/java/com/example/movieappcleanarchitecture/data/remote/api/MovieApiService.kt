@@ -1,7 +1,7 @@
 package com.example.movieappcleanarchitecture.data.remote.api
 
 import com.example.movieappcleanarchitecture.BuildConfig
-import com.example.movieappcleanarchitecture.data.MovieResponse
+import com.example.movieappcleanarchitecture.data.model.MovieResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 

@@ -1,6 +1,6 @@
 package com.example.movieappcleanarchitecture.domain.usecase
 
-import com.example.movieappcleanarchitecture.data.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 import com.example.movieappcleanarchitecture.data.repository.MovieRepository
 
 class GetPopularMoviesUseCase(private val repository: MovieRepository) {
