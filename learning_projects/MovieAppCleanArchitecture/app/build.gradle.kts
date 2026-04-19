@@ -19,10 +19,8 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-//        buildConfigField("String", "TMDB_TOKEN", "\"${project.findProperty("TMDB_TOKEN")}\"")
-//        var TMDB_TOKEN = System.getenv("TMDB_TOKEN")
-        var TMDB_TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZGFkMTIwMDRjMDdhMGQ4MjI0ZTk0ZGJmNDY4ZWJiZiIsInN1YiI6IjY1ZDk4YTZhOWQ4OTM5MDE2MmRhNzIyOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.36uJTAsCQUrvQw9SCgoVU3L8TqPRJRihp6xnAcgg6tg"
-        buildConfigField("String", "TMDB_TOKEN", "\"${TMDB_TOKEN}\"")
+        // Accessing the TOKEN from the gradle.properties
+        buildConfigField("String", "TMDB_TOKEN", "\"${project.findProperty("TMDB_TOKEN")}\"")
     }
 
     buildTypes {
