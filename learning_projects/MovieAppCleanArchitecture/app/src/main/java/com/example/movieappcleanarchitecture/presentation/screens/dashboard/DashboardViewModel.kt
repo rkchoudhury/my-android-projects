@@ -11,14 +11,12 @@ import com.example.movieappcleanarchitecture.presentation.models.DashboardUiStat
 import kotlinx.coroutines.launch
 
 class DashboardViewModel : ViewModel() {
-    // This is the private state variable, whenever the _moviesState value changes/updates it will trigger recomposition
-    private val _moviesState = mutableStateOf(DashboardUiState())
 
-    // This is the public variable which can be accessed from the outside
-    val moviesState: State<DashboardUiState> = _moviesState
+    private val _uiState = mutableStateOf<DashboardUiState>(DashboardUiState.Loading)
+    val uiState: State<DashboardUiState> = _uiState
 
-    val movieRepository = MovieRepositoryImpl(MovieRemoteDataSource())
-    val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
+    private val movieRepository = MovieRepositoryImpl(MovieRemoteDataSource())
+    private val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
 
     init {
         fetchMovies()
@@ -26,17 +24,13 @@ class DashboardViewModel : ViewModel() {
 
     private fun fetchMovies() {
         viewModelScope.launch {
+            _uiState.value = DashboardUiState.Loading
             try {
-                val response = getPopularMovies()
-                _moviesState.value = _moviesState.value.copy(
-                    list = response,
-                    loading = false,
-                    error = null
-                )
+                val movies = getPopularMovies()
+                _uiState.value = DashboardUiState.Success(movies)
             } catch (e: Exception) {
-                _moviesState.value = _moviesState.value.copy(
-                    loading = false,
-                    error = "Error fetching movies ${e.cause} - ${e.message}"
+                _uiState.value = DashboardUiState.Error(
+                    e.message ?: "An unexpected error occurred"
                 )
             }
         }

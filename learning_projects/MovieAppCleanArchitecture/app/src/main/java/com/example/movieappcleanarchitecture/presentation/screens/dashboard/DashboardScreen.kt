@@ -10,26 +10,27 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.movieappcleanarchitecture.presentation.components.LoadingIndicator
 import com.example.movieappcleanarchitecture.presentation.components.MovieError
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
+import com.example.movieappcleanarchitecture.presentation.models.DashboardUiState
 
 @Composable
 fun DashboardScreen() {
-    val dashboardViewModel: DashboardViewModel = viewModel()
-    val movieList by dashboardViewModel.moviesState
+    val viewModel: DashboardViewModel = viewModel()
+    val uiState by viewModel.uiState
 
     Column(
         modifier = Modifier.fillMaxSize()
     ) {
-        when {
-            movieList.loading -> {
+        when (val state = uiState) {
+            is DashboardUiState.Loading -> {
                 LoadingIndicator()
             }
 
-            movieList.error != null -> {
-                MovieError("Something went wrong \n" + movieList.error.toString())
+            is DashboardUiState.Error -> {
+                MovieError("Something went wrong\n" + state.message)
             }
 
-            else -> {
-                MovieGrid(movieList.list)
+            is DashboardUiState.Success -> {
+                MovieGrid(state.movies)
             }
         }
     }
