@@ -1,7 +1,7 @@
-package com.example.movieappcleanarchitecture.datatemp.remote
+package com.example.movieappcleanarchitecture.data.remote
 
 import com.example.movieappcleanarchitecture.BuildConfig
-import com.example.movieappcleanarchitecture.datatemp.remote.model.MovieApiResponse
+import com.example.movieappcleanarchitecture.data.remote.model.MovieApiResponse
 import retrofit2.http.GET
 import retrofit2.http.Headers
 

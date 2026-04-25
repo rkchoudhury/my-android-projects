@@ -1,6 +1,6 @@
 package com.example.movieappcleanarchitecture.presentation.models
 
-import com.example.movieappcleanarchitecture.datatemp.model.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 
 /**
  * Sealed interface representing the possible UI states for the Dashboard screen.

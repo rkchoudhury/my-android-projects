@@ -1,4 +1,4 @@
-package com.example.movieappcleanarchitecture.datatemp.model
+package com.example.movieappcleanarchitecture.data.model
 
 /**
  * Business model exposed from the data layer to domain/UI layers.

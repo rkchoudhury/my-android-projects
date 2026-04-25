@@ -1,6 +1,6 @@
-package com.example.movieappcleanarchitecture.datatemp.repository
+package com.example.movieappcleanarchitecture.data.repository
 
-import com.example.movieappcleanarchitecture.datatemp.model.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 
 /**
  * Repository interface for movie data.

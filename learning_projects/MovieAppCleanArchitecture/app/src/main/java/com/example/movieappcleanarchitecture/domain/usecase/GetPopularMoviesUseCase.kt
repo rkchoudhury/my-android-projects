@@ -1,7 +1,7 @@
-package com.example.movieappcleanarchitecture.domaintemp.usecase
+package com.example.movieappcleanarchitecture.domain.usecase
 
-import com.example.movieappcleanarchitecture.datatemp.model.Movie
-import com.example.movieappcleanarchitecture.datatemp.repository.MovieRepository
+import com.example.movieappcleanarchitecture.data.model.Movie
+import com.example.movieappcleanarchitecture.data.repository.MovieRepository
 
 
 /**

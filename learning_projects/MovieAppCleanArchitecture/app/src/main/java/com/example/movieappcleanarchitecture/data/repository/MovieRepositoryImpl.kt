@@ -1,7 +1,7 @@
-package com.example.movieappcleanarchitecture.datatemp.repository
+package com.example.movieappcleanarchitecture.data.repository
 
-import com.example.movieappcleanarchitecture.datatemp.model.Movie
-import com.example.movieappcleanarchitecture.datatemp.remote.MovieRemoteDataSource
+import com.example.movieappcleanarchitecture.data.model.Movie
+import com.example.movieappcleanarchitecture.data.remote.MovieRemoteDataSource
 
 /**
  * Repository implementation that fetches from the remote data source

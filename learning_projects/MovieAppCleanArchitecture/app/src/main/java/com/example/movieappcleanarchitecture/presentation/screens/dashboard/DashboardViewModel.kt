@@ -4,9 +4,9 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieappcleanarchitecture.datatemp.remote.MovieRemoteDataSource
-import com.example.movieappcleanarchitecture.datatemp.repository.MovieRepositoryImpl
-import com.example.movieappcleanarchitecture.domaintemp.usecase.GetPopularMoviesUseCase
+import com.example.movieappcleanarchitecture.data.remote.MovieRemoteDataSource
+import com.example.movieappcleanarchitecture.data.repository.MovieRepositoryImpl
+import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
 import com.example.movieappcleanarchitecture.presentation.models.DashboardUiState
 import kotlinx.coroutines.launch
 

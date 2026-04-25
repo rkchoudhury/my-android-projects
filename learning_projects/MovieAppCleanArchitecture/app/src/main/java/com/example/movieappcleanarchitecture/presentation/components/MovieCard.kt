@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.common.CDN_IMAGE_URL
-import com.example.movieappcleanarchitecture.datatemp.model.Movie
+import com.example.movieappcleanarchitecture.data.model.Movie
 
 @Composable
 fun MovieCard(movie: Movie) {

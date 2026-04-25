@@ -1,4 +1,4 @@
-package com.example.movieappcleanarchitecture.datatemp.remote.model
+package com.example.movieappcleanarchitecture.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 

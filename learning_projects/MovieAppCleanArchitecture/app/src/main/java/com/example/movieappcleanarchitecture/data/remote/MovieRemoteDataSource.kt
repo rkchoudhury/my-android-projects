@@ -1,7 +1,7 @@
-package com.example.movieappcleanarchitecture.datatemp.remote
+package com.example.movieappcleanarchitecture.data.remote
 
 import com.example.movieappcleanarchitecture.common.API_BASE_URL
-import com.example.movieappcleanarchitecture.datatemp.remote.model.MovieApiModel
+import com.example.movieappcleanarchitecture.data.remote.model.MovieApiModel
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
