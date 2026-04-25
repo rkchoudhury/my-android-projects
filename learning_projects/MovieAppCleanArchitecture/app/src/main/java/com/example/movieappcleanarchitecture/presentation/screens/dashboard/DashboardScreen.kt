@@ -13,8 +13,8 @@ import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
 
 @Composable
 fun DashboardScreen() {
-    val movieViewModel: MovieViewModel = viewModel()
-    val movieList by movieViewModel.moviesState
+    val dashboardViewModel: DashboardViewModel = viewModel()
+    val movieList by dashboardViewModel.moviesState
 
     Column(
         modifier = Modifier.fillMaxSize()

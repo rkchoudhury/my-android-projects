@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.common.CDN_IMAGE_URL
-import com.example.movieappcleanarchitecture.data.model.Movie
+import com.example.movieappcleanarchitecture.datatemp.model.Movie
 
 @Composable
 fun MovieCard(movie: Movie) {
@@ -71,20 +71,13 @@ fun MovieCard(movie: Movie) {
 @Composable
 fun MovieCardPreview() {
     val movie = Movie(
-        adult = false,
-        backdropPath = "/kEYWal656zP5Q2Tohm91aw6orlT.jpg",
-        genreIds = listOf(18, 35, 10749),
         id = 1064213,
-        originalLanguage = "en",
         originalTitle = "Anora",
         overview = "A young sex worker from Brooklyn gets her chance at a Cinderella story when she meets and impulsively marries the son of an oligarch. Once the news reaches Russia, her fairytale is threatened as his parents set out to get the marriage annulled.",
-        popularity = 530.515,
         posterPath = "/7MrgIUeq0DD2iF7GR6wqJfYZNeC.jpg",
         releaseDate = "2024-10-14",
         title = "Anora",
-        video = false,
         voteAverage = 7.1,
-        voteCount = 960
     )
 
     MovieCard(movie)
