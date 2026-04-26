@@ -124,6 +124,90 @@ com.example.movieappcleanarchitecture/
 
 ---
 
+## Scaling: Feature-Based Packaging
+
+The current flat structure (`data/remote/`, `data/repository/`, `data/model/`) works well for a small app
+with one feature. But as the app grows (movies, actors, reviews, search…), each folder fills up with
+unrelated files and becomes hard to navigate.
+
+**The solution: group by feature instead of by type.**
+
+### Current Structure (flat — good for 1 feature)
+
+```
+data/
+├── model/
+│   └── Movie.kt
+├── remote/
+│   ├── BaseRemoteDataSource.kt
+│   ├── MovieApiService.kt
+│   ├── MovieRemoteDataSource.kt
+│   └── model/
+│       ├── MovieApiModel.kt
+│       └── MovieApiResponse.kt
+└── repository/
+    ├── MovieRepository.kt
+    └── MovieRepositoryImpl.kt
+```
+
+### Scaled Structure (feature-based — when app grows)
+
+```
+data/
+├── movie/                              ← Everything movie-related in one place
+│   ├── MovieRepository.kt                 Interface
+│   ├── MovieRepositoryImpl.kt             Implementation (maps API → business model)
+│   ├── MovieRemoteDataSource.kt           Wraps Retrofit calls
+│   ├── MovieApiService.kt                 Retrofit interface
+│   └── model/
+│       ├── Movie.kt                        Business model (exposed to other layers)
+│       ├── MovieApiModel.kt                API model with @SerializedName (internal)
+│       └── MovieApiResponse.kt             API wrapper (internal)
+│
+├── actor/                              ← Everything actor-related in one place
+│   ├── ActorRepository.kt
+│   ├── ActorRepositoryImpl.kt
+│   ├── ActorRemoteDataSource.kt
+│   ├── ActorApiService.kt
+│   └── model/
+│       ├── Actor.kt                        Business model
+│       └── ActorApiModel.kt                API model
+│
+└── remote/                             ← Shared networking base
+    └── BaseRemoteDataSource.kt             Shared Retrofit instance (used by all data sources)
+```
+
+### Why Feature-Based?
+
+| Flat (by type)                              | Feature-based                                |
+|---------------------------------------------|----------------------------------------------|
+| `remote/` has MovieApiService + ActorApiService + ... | `movie/` has everything for movies together |
+| Must jump across 3 folders to understand one feature | Open one folder to see the full picture     |
+| Works for 1-2 features                      | Scales to 10+ features cleanly               |
+
+### When to Switch?
+
+- **1 feature (now):** Keep the flat structure. Don't over-organize.
+- **2+ features:** Consider grouping by feature.
+- **The `remote/` folder** stays at the top level for shared code like `BaseRemoteDataSource`.
+
+### Naming Convention
+
+| Type         | Pattern                          | Example                    |
+|--------------|----------------------------------|----------------------------|
+| Business model | `{Feature}`                    | `Movie`, `Actor`           |
+| API model    | `{Feature}ApiModel`              | `MovieApiModel`            |
+| API response | `{Feature}ApiResponse`           | `MovieApiResponse`         |
+| API service  | `{Feature}ApiService`            | `MovieApiService`          |
+| Data source  | `{Feature}RemoteDataSource`      | `MovieRemoteDataSource`    |
+| Repository   | `{Feature}Repository`            | `MovieRepository` (interface) |
+| Repository impl | `{Feature}RepositoryImpl`     | `MovieRepositoryImpl`      |
+| Use case     | `{Verb}{Feature}UseCase`         | `GetPopularMoviesUseCase`  |
+| ViewModel    | `{Screen}ViewModel`              | `DashboardViewModel`       |
+| UI state     | `{Screen}UiState`                | `DashboardUiState`         |
+
+---
+
 ## Setup
 
 1. Get a free API key from [TMDB](https://www.themoviedb.org/settings/api)
