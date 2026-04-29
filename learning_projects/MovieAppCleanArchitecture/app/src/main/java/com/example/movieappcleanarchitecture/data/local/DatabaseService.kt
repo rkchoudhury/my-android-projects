@@ -26,5 +26,5 @@ abstract class DatabaseService : RoomDatabase() {
             (instance ?: create(context)).also { instance = it }
     }
 
-    abstract fun noteDao(): MovieDao
+    abstract fun movieDao(): MovieDao
 }
