@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+
+    // KSP (Kotlin Symbol Processing) - Used in Room for fast compilation
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -69,4 +72,9 @@ dependencies {
 
     // External Image Loading Library
     implementation(libs.coil.compose)
+
+    // room database dependencies
+    implementation("androidx.room:room-runtime:2.8.4")
+    implementation("androidx.room:room-ktx:2.8.4") // Kotlin extensions and Coroutines support for Room
+    ksp("androidx.room:room-compiler:2.8.4") // Kotlin Symbol Processing (KSP)
 }
