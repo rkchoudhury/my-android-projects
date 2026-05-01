@@ -37,7 +37,7 @@ class MovieRepositoryImpl(
             localDataSource.saveAll(movies)
 
             // 4. Return fresh data
-            return movies;
+            return movies
         } catch (e: Exception) {
             // 5. Network failed → fall back to cached local data
             val cachedMovies = localDataSource.getAll()
