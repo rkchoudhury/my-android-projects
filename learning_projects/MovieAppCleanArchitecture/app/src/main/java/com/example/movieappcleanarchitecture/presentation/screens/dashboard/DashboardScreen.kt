@@ -5,8 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.movieappcleanarchitecture.MovieApp
 import com.example.movieappcleanarchitecture.presentation.components.LoadingIndicator
 import com.example.movieappcleanarchitecture.presentation.components.MovieError
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
@@ -14,7 +16,9 @@ import com.example.movieappcleanarchitecture.presentation.models.DashboardUiStat
 
 @Composable
 fun DashboardScreen() {
-    val viewModel: DashboardViewModel = viewModel()
+    val app = LocalContext.current.applicationContext as MovieApp
+    val factory = DashboardViewModelFactory(app.appContainer.getPopularMoviesUseCase)
+    val viewModel: DashboardViewModel = viewModel(factory = factory)
     val uiState by viewModel.uiState
 
     Column(

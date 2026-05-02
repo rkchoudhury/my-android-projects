@@ -1,28 +1,18 @@
 package com.example.movieappcleanarchitecture.presentation.screens.dashboard
 
-import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.example.movieappcleanarchitecture.data.local.MovieLocalDataSource
-import com.example.movieappcleanarchitecture.data.remote.MovieRemoteDataSource
-import com.example.movieappcleanarchitecture.data.repository.MovieRepositoryImpl
 import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
 import com.example.movieappcleanarchitecture.presentation.models.DashboardUiState
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(application: Application) : AndroidViewModel(application) {
+class DashboardViewModel(private val getPopularMovies: GetPopularMoviesUseCase) : ViewModel() {
 
     private val _uiState = mutableStateOf<DashboardUiState>(DashboardUiState.Loading)
     val uiState: State<DashboardUiState> = _uiState
-
-    private val movieRepository =
-        MovieRepositoryImpl(
-            MovieRemoteDataSource(),
-            MovieLocalDataSource(application.applicationContext)
-        )
-    private val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
 
     init {
         fetchMovies()
@@ -40,5 +30,14 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
                 )
             }
         }
+    }
+}
+
+// Factory — tells Android HOW to create the ViewModel with custom parameters
+class DashboardViewModelFactory(
+    private val getPopularMoviesUseCase: GetPopularMoviesUseCase
+) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        return DashboardViewModel(getPopularMoviesUseCase) as T
     }
 }
