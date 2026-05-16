@@ -17,6 +17,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val car: Car? = Car(Wheel(), Engine())
+        car?.drive()
+
         setContent {
             Dagger2CarTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
