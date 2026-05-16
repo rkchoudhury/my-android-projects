@@ -18,8 +18,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val car: Car? = Car(Wheel(), Engine())
-        car?.drive()
+//        val car: Car = Car(Wheel(), Engine())
+//        car.drive()
+
+        val carComponent = DaggerCarComponent.create()
+        val car: Car = carComponent.getCar()
+        car.drive()
 
         setContent {
             Dagger2CarTheme {

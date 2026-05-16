@@ -1,10 +1,11 @@
 package com.example.dagger2car
 
 import android.util.Log
+import javax.inject.Inject
 
-class Car(val wheel: Wheel, val engine: Engine) {
+class Car @Inject constructor(val wheel: Wheel, val engine: Engine) {
 
     fun drive() {
-        Log.d("DRAGGER", "Car is driving")
+        Log.d("DaggerCar", "I am driving")
     }
 }
