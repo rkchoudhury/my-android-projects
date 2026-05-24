@@ -77,4 +77,8 @@ dependencies {
     implementation("androidx.room:room-runtime:2.8.4")
     implementation("androidx.room:room-ktx:2.8.4") // Kotlin extensions and Coroutines support for Room
     ksp("androidx.room:room-compiler:2.8.4") // Kotlin Symbol Processing (KSP)
+
+    // dagger dependencies
+    implementation("com.google.dagger:dagger:2.59.2")
+    ksp("com.google.dagger:dagger-compiler:2.59.2")
 }
