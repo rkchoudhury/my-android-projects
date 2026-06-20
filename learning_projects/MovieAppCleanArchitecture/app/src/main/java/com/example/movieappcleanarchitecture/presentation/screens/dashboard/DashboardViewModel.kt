@@ -17,12 +17,17 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     private val _uiState = mutableStateOf<DashboardUiState>(DashboardUiState.Loading)
     val uiState: State<DashboardUiState> = _uiState
 
-    private val movieRepository =
-        MovieRepositoryImpl(
-            MovieRemoteDataSource(),
-            MovieLocalDataSource(application.applicationContext)
-        )
-    private val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
+    // Using Normal way
+    // private val movieRepository =
+    //    MovieRepositoryImpl(
+    //        MovieRemoteDataSource(),
+    //        MovieLocalDataSource(application.applicationContext)
+    //    )
+    // private val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
+
+    // Using Dragger Method
+    private val getPopularMovies =
+        (application as MovieApplication).appComponent.getPopularMoviesUseCase()
 
     init {
         fetchMovies()
