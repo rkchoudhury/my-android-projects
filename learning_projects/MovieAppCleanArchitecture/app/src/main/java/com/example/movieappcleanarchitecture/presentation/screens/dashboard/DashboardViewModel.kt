@@ -5,6 +5,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.movieappcleanarchitecture.MovieApplication
 import com.example.movieappcleanarchitecture.data.local.MovieLocalDataSource
 import com.example.movieappcleanarchitecture.data.remote.MovieRemoteDataSource
 import com.example.movieappcleanarchitecture.data.repository.MovieRepositoryImpl
