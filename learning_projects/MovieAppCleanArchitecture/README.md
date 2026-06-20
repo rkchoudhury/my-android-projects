@@ -124,6 +124,249 @@ com.example.movieappcleanarchitecture/
 
 ---
 
+## Dependency Injection with Dagger
+
+This project uses **Dagger 2** (with KSP) for dependency injection — replacing manual object creation with an automated dependency graph.
+
+### Why Dagger?
+
+Without DI, the ViewModel would manually create its own dependencies:
+
+```kotlin
+// ❌ Without DI — ViewModel knows HOW to build everything
+val remoteDS = MovieRemoteDataSource()
+val localDS = MovieLocalDataSource(context)
+val repo = MovieRepositoryImpl(remoteDS, localDS)
+val useCase = GetPopularMoviesUseCase(repo)
+```
+
+With Dagger, the ViewModel just **asks** for what it needs — Dagger handles the wiring:
+
+```kotlin
+// ✅ With Dagger — ViewModel only knows WHAT it needs
+val getPopularMovies = (application as MovieApplication).appComponent.getPopularMoviesUseCase()
+```
+
+---
+
+### Dagger Components Overview
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                        AppComponent (Interface)                       │
+│                    @Component(modules = [AppModule])                  │
+│                                                                      │
+│  Exposes:  fun getPopularMoviesUseCase(): GetPopularMoviesUseCase    │
+│  Factory:  fun create(@BindsInstance context: Context): AppComponent  │
+└─────────────────────────────────────────┬───────────────────────────┘
+                                          │ uses
+                                          ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                         AppModule (Class)                             │
+│                            @Module                                    │
+│                                                                      │
+│  @Provides provideMovieRemoteDataSource() → MovieRemoteDataSource    │
+│  @Provides provideMovieLocalDataSource(ctx) → MovieLocalDataSource   │
+│  @Provides provideMovieRepository(remote, local) → MovieRepository   │
+│  @Provides provideGetPopularMoviesUseCase(repo) → GetPopularMoviesUseCase │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+### How the Dependency Graph Resolves
+
+When `appComponent.getPopularMoviesUseCase()` is called, Dagger resolves the full chain:
+
+```
+Step 1:  Need GetPopularMoviesUseCase
+         └── provideGetPopularMoviesUseCase(movieRepository)
+                                              │
+Step 2:  Need MovieRepository                 │
+         └── provideMovieRepository(remoteDataSource, localDataSource)
+                                     │                  │
+Step 3:  Need MovieRemoteDataSource  │                  │
+         └── provideMovieRemoteDataSource()             │
+                  → creates MovieRemoteDataSource()     │
+                                                        │
+Step 4:  Need MovieLocalDataSource                      │
+         └── provideMovieLocalDataSource(context)
+                                          │
+Step 5:  Need Context                     │
+         └── @BindsInstance from AppComponent.Factory
+                  → uses Application context passed at startup
+```
+
+**Result:** Dagger chains all 5 steps automatically and returns a fully-constructed `GetPopularMoviesUseCase`.
+
+---
+
+### File-by-File Breakdown
+
+#### 1. `di/AppModule.kt` — The Recipe Book
+
+```kotlin
+@Module
+class AppModule {
+
+    @Provides
+    fun provideMovieRemoteDataSource(): MovieRemoteDataSource {
+        return MovieRemoteDataSource()
+    }
+
+    @Provides
+    fun provideMovieLocalDataSource(context: Context): MovieLocalDataSource {
+        return MovieLocalDataSource(context)
+    }
+
+    @Provides
+    fun provideMovieRepository(
+        remoteDataSource: MovieRemoteDataSource,
+        localDataSource: MovieLocalDataSource
+    ): MovieRepository {
+        return MovieRepositoryImpl(remoteDataSource, localDataSource)
+    }
+
+    @Provides
+    fun provideGetPopularMoviesUseCase(movieRepository: MovieRepository): GetPopularMoviesUseCase {
+        return GetPopularMoviesUseCase(movieRepository)
+    }
+}
+```
+
+- Each `@Provides` method teaches Dagger how to create ONE type
+- Method parameters are automatically resolved by Dagger from other `@Provides` methods
+- `provideMovieRepository` returns `MovieRepository` (interface) not `MovieRepositoryImpl` — this enables swapping implementations
+
+#### 2. `di/AppComponent.kt` — The Bridge
+
+```kotlin
+@Component(modules = [AppModule::class])
+interface AppComponent {
+
+    fun getPopularMoviesUseCase(): GetPopularMoviesUseCase
+
+    @Component.Factory
+    interface Factory {
+        fun create(@BindsInstance context: Context): AppComponent
+    }
+}
+```
+
+- `@Component` tells Dagger to generate `DaggerAppComponent` (auto-generated at build time)
+- `modules = [AppModule::class]` links to the recipe book
+- `getPopularMoviesUseCase()` is an **exposure method** — what the outside world can request
+- `@Component.Factory` + `@BindsInstance` lets us pass `Context` (which Android creates, not Dagger)
+
+#### 3. `MovieApplication.kt` — Initialization at App Startup
+
+```kotlin
+class MovieApplication : Application() {
+
+    lateinit var appComponent: AppComponent
+
+    override fun onCreate() {
+        super.onCreate()
+        appComponent = DaggerAppComponent.factory().create(this)
+    }
+}
+```
+
+- Creates the Dagger component ONCE at app launch
+- Passes `this` (Application Context) into the graph via the factory
+- `appComponent` is publicly accessible for Activities/ViewModels
+
+#### 4. `DashboardViewModel.kt` — Consuming the Dependency
+
+```kotlin
+class DashboardViewModel(application: Application) : AndroidViewModel(application) {
+
+    private val getPopularMovies =
+        (application as MovieApplication).appComponent.getPopularMoviesUseCase()
+}
+```
+
+- Casts `Application` → `MovieApplication` to access `appComponent`
+- Calls `.getPopularMoviesUseCase()` — Dagger builds the entire chain and returns the use case
+- ViewModel has **zero knowledge** of RemoteDataSource, LocalDataSource, or Repository
+
+---
+
+### Complete Runtime Flow
+
+```
+App Launch
+    │
+    ▼
+MovieApplication.onCreate()
+    │  appComponent = DaggerAppComponent.factory().create(this)
+    ▼
+DashboardViewModel created
+    │  (application as MovieApplication).appComponent.getPopularMoviesUseCase()
+    ▼
+Dagger resolves dependency chain:
+    Context ──→ MovieLocalDataSource ──┐
+                                       ├──→ MovieRepositoryImpl ──→ GetPopularMoviesUseCase
+    MovieRemoteDataSource ─────────────┘
+    │
+    ▼
+ViewModel calls getPopularMovies()
+    │
+    ▼
+UseCase calls repository.getPopularMovies()
+    │
+    ▼
+Repository calls remoteDataSource.getPopularMovies()
+    │
+    ▼
+API response → mapped to Movie list → returned to UI
+```
+
+---
+
+### Key Dagger Annotations
+
+| Annotation | Purpose |
+|-----------|---------|
+| `@Module` | Marks a class as a provider of dependencies (the recipe book) |
+| `@Provides` | Marks a method that creates/returns a dependency |
+| `@Component` | Interface that Dagger implements — connects modules to consumers |
+| `@Component.Factory` | Pattern to pass external values (like Context) into the graph |
+| `@BindsInstance` | Tells Dagger to store a passed-in value and provide it when needed |
+
+---
+
+### Gradle Setup
+
+```kotlin
+// app/build.gradle.kts
+plugins {
+    id("com.google.devtools.ksp")  // Kotlin Symbol Processing
+}
+
+dependencies {
+    implementation("com.google.dagger:dagger:2.59.2")
+    ksp("com.google.dagger:dagger-compiler:2.59.2")
+}
+```
+
+> **Note:** `DaggerAppComponent` shows as red/unresolved in the IDE until you build the project.
+> This is normal — Dagger generates the class during KSP compilation.
+
+---
+
+### Manual DI vs Dagger Comparison
+
+| Aspect | Manual DI (AppContainer) | Dagger |
+|--------|--------------------------|--------|
+| Object creation | You write it yourself | Dagger generates it |
+| Wiring dependencies | You chain constructors manually | Dagger resolves the graph |
+| Adding a new dependency | Edit AppContainer + pass it through | Add one `@Provides` method |
+| Compile-time safety | No (runtime crashes if you forget) | Yes (build fails if graph is incomplete) |
+| Boilerplate | Grows linearly with dependencies | Stays minimal |
+
+---
+
 ## Scaling: Feature-Based Packaging
 
 The current flat structure (`data/remote/`, `data/repository/`, `data/model/`) works well for a small app
