@@ -124,11 +124,11 @@ com.example.movieappcleanarchitecture/
 
 ---
 
-## Dependency Injection with Dagger
+## Dependency Injection with Hilt
 
-This project uses **Dagger 2** (with KSP) for dependency injection — replacing manual object creation with an automated dependency graph.
+This project uses **Hilt** (built on Dagger) with **KSP** for dependency injection. Hilt removes manual component wiring and gives Android-aware entry points for `Application`, `Activity`, and `ViewModel`.
 
-### Why Dagger?
+### Why Hilt?
 
 Without DI, the ViewModel would manually create its own dependencies:
 
@@ -140,199 +140,134 @@ val repo = MovieRepositoryImpl(remoteDS, localDS)
 val useCase = GetPopularMoviesUseCase(repo)
 ```
 
-With Dagger, the ViewModel just **asks** for what it needs — Dagger handles the wiring:
+With Hilt, the ViewModel declares what it needs in the constructor and Hilt provides it:
 
 ```kotlin
-// ✅ With Dagger — ViewModel only knows WHAT it needs
-val getPopularMovies = (application as MovieApplication).appComponent.getPopularMoviesUseCase()
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val getPopularMovies: GetPopularMoviesUseCase
+) : ViewModel()
 ```
 
 ---
 
-### Dagger Components Overview
+### Hilt Setup Overview
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AppComponent (Interface)                       │
-│                    @Component(modules = [AppModule])                  │
-│                                                                      │
-│  Exposes:  fun getPopularMoviesUseCase(): GetPopularMoviesUseCase    │
-│  Factory:  fun create(@BindsInstance context: Context): AppComponent  │
+│                   MovieApplication (Application)                    │
+│                        @HiltAndroidApp                              │
+│          Creates the app-level Hilt container automatically         │
 └─────────────────────────────────────────┬───────────────────────────┘
-                                          │ uses
+                                          │ installs
                                           ▼
 ┌─────────────────────────────────────────────────────────────────────┐
-│                         AppModule (Class)                             │
-│                            @Module                                    │
+│                       AppModule (DI Module)                         │
+│        @Module + @InstallIn(SingletonComponent::class)             │
 │                                                                      │
 │  @Provides provideMovieRemoteDataSource() → MovieRemoteDataSource    │
-│  @Provides provideMovieLocalDataSource(ctx) → MovieLocalDataSource   │
+│  @Provides provideMovieLocalDataSource(@ApplicationContext ctx)      │
 │  @Provides provideMovieRepository(remote, local) → MovieRepository   │
-│  @Provides provideGetPopularMoviesUseCase(repo) → GetPopularMoviesUseCase │
+│  @Provides provideGetPopularMoviesUseCase(repo)                      │
+└─────────────────────────────────────────┬───────────────────────────┘
+                                          │ injects
+                                          ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                MainActivity + DashboardViewModel                    │
+│   @AndroidEntryPoint + @HiltViewModel + hiltViewModel()            │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-### How the Dependency Graph Resolves
+### How Dependency Resolution Works
 
-When `appComponent.getPopularMoviesUseCase()` is called, Dagger resolves the full chain:
+When `DashboardScreen` calls `hiltViewModel()`, Hilt creates `DashboardViewModel` and resolves:
 
-```
-Step 1:  Need GetPopularMoviesUseCase
-         └── provideGetPopularMoviesUseCase(movieRepository)
-                                              │
-Step 2:  Need MovieRepository                 │
-         └── provideMovieRepository(remoteDataSource, localDataSource)
-                                     │                  │
-Step 3:  Need MovieRemoteDataSource  │                  │
-         └── provideMovieRemoteDataSource()             │
-                  → creates MovieRemoteDataSource()     │
-                                                        │
-Step 4:  Need MovieLocalDataSource                      │
-         └── provideMovieLocalDataSource(context)
-                                          │
-Step 5:  Need Context                     │
-         └── @BindsInstance from AppComponent.Factory
-                  → uses Application context passed at startup
-```
+1. `GetPopularMoviesUseCase`
+2. `MovieRepository`
+3. `MovieRemoteDataSource`
+4. `MovieLocalDataSource`
+5. `Context` from `@ApplicationContext`
 
-**Result:** Dagger chains all 5 steps automatically and returns a fully-constructed `GetPopularMoviesUseCase`.
+Result: the full chain is built automatically and injected into the ViewModel constructor.
 
 ---
 
 ### File-by-File Breakdown
 
-#### 1. `di/AppModule.kt` — The Recipe Book
+#### 1. `MovieApplication.kt` — App-level Hilt container
+
+```kotlin
+@HiltAndroidApp
+class MovieApplication : Application()
+```
+
+#### 2. `di/AppModule.kt` — Providers installed in singleton graph
 
 ```kotlin
 @Module
-class AppModule {
+@InstallIn(SingletonComponent::class)
+object AppModule {
 
     @Provides
-    fun provideMovieRemoteDataSource(): MovieRemoteDataSource {
-        return MovieRemoteDataSource()
-    }
+    fun provideMovieRemoteDataSource(): MovieRemoteDataSource = MovieRemoteDataSource()
 
     @Provides
-    fun provideMovieLocalDataSource(context: Context): MovieLocalDataSource {
-        return MovieLocalDataSource(context)
-    }
+    fun provideMovieLocalDataSource(
+        @ApplicationContext context: Context
+    ): MovieLocalDataSource = MovieLocalDataSource(context)
 
     @Provides
     fun provideMovieRepository(
         remoteDataSource: MovieRemoteDataSource,
         localDataSource: MovieLocalDataSource
-    ): MovieRepository {
-        return MovieRepositoryImpl(remoteDataSource, localDataSource)
-    }
+    ): MovieRepository = MovieRepositoryImpl(remoteDataSource, localDataSource)
 
     @Provides
-    fun provideGetPopularMoviesUseCase(movieRepository: MovieRepository): GetPopularMoviesUseCase {
-        return GetPopularMoviesUseCase(movieRepository)
-    }
+    fun provideGetPopularMoviesUseCase(
+        movieRepository: MovieRepository
+    ): GetPopularMoviesUseCase = GetPopularMoviesUseCase(movieRepository)
 }
 ```
 
-- Each `@Provides` method teaches Dagger how to create ONE type
-- Method parameters are automatically resolved by Dagger from other `@Provides` methods
-- `provideMovieRepository` returns `MovieRepository` (interface) not `MovieRepositoryImpl` — this enables swapping implementations
-
-#### 2. `di/AppComponent.kt` — The Bridge
+#### 3. `presentation/MainActivity.kt` — Android entry point
 
 ```kotlin
-@Component(modules = [AppModule::class])
-interface AppComponent {
-
-    fun getPopularMoviesUseCase(): GetPopularMoviesUseCase
-
-    @Component.Factory
-    interface Factory {
-        fun create(@BindsInstance context: Context): AppComponent
-    }
-}
+@AndroidEntryPoint
+class MainActivity : ComponentActivity()
 ```
 
-- `@Component` tells Dagger to generate `DaggerAppComponent` (auto-generated at build time)
-- `modules = [AppModule::class]` links to the recipe book
-- `getPopularMoviesUseCase()` is an **exposure method** — what the outside world can request
-- `@Component.Factory` + `@BindsInstance` lets us pass `Context` (which Android creates, not Dagger)
-
-#### 3. `MovieApplication.kt` — Initialization at App Startup
+#### 4. `DashboardViewModel.kt` + `DashboardScreen.kt` — injected ViewModel
 
 ```kotlin
-class MovieApplication : Application() {
-
-    lateinit var appComponent: AppComponent
-
-    override fun onCreate() {
-        super.onCreate()
-        appComponent = DaggerAppComponent.factory().create(this)
-    }
-}
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val getPopularMovies: GetPopularMoviesUseCase
+) : ViewModel()
 ```
-
-- Creates the Dagger component ONCE at app launch
-- Passes `this` (Application Context) into the graph via the factory
-- `appComponent` is publicly accessible for Activities/ViewModels
-
-#### 4. `DashboardViewModel.kt` — Consuming the Dependency
 
 ```kotlin
-class DashboardViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val getPopularMovies =
-        (application as MovieApplication).appComponent.getPopularMoviesUseCase()
+@Composable
+fun DashboardScreen() {
+    val viewModel: DashboardViewModel = hiltViewModel()
+    // ...
 }
-```
-
-- Casts `Application` → `MovieApplication` to access `appComponent`
-- Calls `.getPopularMoviesUseCase()` — Dagger builds the entire chain and returns the use case
-- ViewModel has **zero knowledge** of RemoteDataSource, LocalDataSource, or Repository
-
----
-
-### Complete Runtime Flow
-
-```
-App Launch
-    │
-    ▼
-MovieApplication.onCreate()
-    │  appComponent = DaggerAppComponent.factory().create(this)
-    ▼
-DashboardViewModel created
-    │  (application as MovieApplication).appComponent.getPopularMoviesUseCase()
-    ▼
-Dagger resolves dependency chain:
-    Context ──→ MovieLocalDataSource ──┐
-                                       ├──→ MovieRepositoryImpl ──→ GetPopularMoviesUseCase
-    MovieRemoteDataSource ─────────────┘
-    │
-    ▼
-ViewModel calls getPopularMovies()
-    │
-    ▼
-UseCase calls repository.getPopularMovies()
-    │
-    ▼
-Repository calls remoteDataSource.getPopularMovies()
-    │
-    ▼
-API response → mapped to Movie list → returned to UI
 ```
 
 ---
 
-### Key Dagger Annotations
+### Key Hilt Annotations
 
 | Annotation | Purpose |
 |-----------|---------|
-| `@Module` | Marks a class as a provider of dependencies (the recipe book) |
-| `@Provides` | Marks a method that creates/returns a dependency |
-| `@Component` | Interface that Dagger implements — connects modules to consumers |
-| `@Component.Factory` | Pattern to pass external values (like Context) into the graph |
-| `@BindsInstance` | Tells Dagger to store a passed-in value and provide it when needed |
+| `@HiltAndroidApp` | Generates and initializes the app-level Hilt container |
+| `@Module` | Declares provider methods for dependencies |
+| `@InstallIn(SingletonComponent::class)` | Installs module in app-wide singleton graph |
+| `@Provides` | Creates/returns a dependency instance |
+| `@AndroidEntryPoint` | Enables Hilt injection in Android classes (Activity/Fragment/etc.) |
+| `@HiltViewModel` | Enables constructor injection for ViewModel |
+| `@ApplicationContext` | Qualifier for application `Context` |
 
 ---
 
@@ -341,29 +276,28 @@ API response → mapped to Movie list → returned to UI
 ```kotlin
 // app/build.gradle.kts
 plugins {
-    id("com.google.devtools.ksp")  // Kotlin Symbol Processing
+    alias(libs.plugins.hilt.android)
+    id("com.google.devtools.ksp")
 }
 
 dependencies {
-    implementation("com.google.dagger:dagger:2.59.2")
-    ksp("com.google.dagger:dagger-compiler:2.59.2")
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }
 ```
 
-> **Note:** `DaggerAppComponent` shows as red/unresolved in the IDE until you build the project.
-> This is normal — Dagger generates the class during KSP compilation.
-
 ---
 
-### Manual DI vs Dagger Comparison
+### Manual DI vs Hilt Comparison
 
-| Aspect | Manual DI (AppContainer) | Dagger |
-|--------|--------------------------|--------|
-| Object creation | You write it yourself | Dagger generates it |
-| Wiring dependencies | You chain constructors manually | Dagger resolves the graph |
-| Adding a new dependency | Edit AppContainer + pass it through | Add one `@Provides` method |
-| Compile-time safety | No (runtime crashes if you forget) | Yes (build fails if graph is incomplete) |
-| Boilerplate | Grows linearly with dependencies | Stays minimal |
+| Aspect | Manual DI (AppContainer) | Hilt |
+|--------|---------------------------|------|
+| Object creation | You write it yourself | Generated from modules + annotations |
+| Wiring dependencies | Manual constructor chaining | Graph resolution at compile time |
+| Android lifecycle integration | Manual | Built-in (`@AndroidEntryPoint`, `@HiltViewModel`) |
+| Accessing dependencies in ViewModel | Pull from app container | Constructor injection |
+| Boilerplate | Grows with app size | Lower and scalable |
 
 ---
 

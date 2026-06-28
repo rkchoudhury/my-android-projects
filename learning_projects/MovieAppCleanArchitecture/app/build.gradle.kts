@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt.android)
 
     // KSP (Kotlin Symbol Processing) - Used in Room for fast compilation
     id("com.google.devtools.ksp")
@@ -78,7 +79,8 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4") // Kotlin extensions and Coroutines support for Room
     ksp("androidx.room:room-compiler:2.8.4") // Kotlin Symbol Processing (KSP)
 
-    // dagger dependencies
-    implementation("com.google.dagger:dagger:2.59.2")
-    ksp("com.google.dagger:dagger-compiler:2.59.2")
+    // hilt dependencies
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

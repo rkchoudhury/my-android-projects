@@ -1,34 +1,22 @@
 package com.example.movieappcleanarchitecture.presentation.screens.dashboard
 
-import android.app.Application
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.movieappcleanarchitecture.MovieApplication
-import com.example.movieappcleanarchitecture.data.local.MovieLocalDataSource
-import com.example.movieappcleanarchitecture.data.remote.MovieRemoteDataSource
-import com.example.movieappcleanarchitecture.data.repository.MovieRepositoryImpl
 import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
 import com.example.movieappcleanarchitecture.presentation.models.DashboardUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 
-class DashboardViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class DashboardViewModel @Inject constructor(
+    private val getPopularMovies: GetPopularMoviesUseCase
+) : ViewModel() {
 
     private val _uiState = mutableStateOf<DashboardUiState>(DashboardUiState.Loading)
     val uiState: State<DashboardUiState> = _uiState
-
-    // Using Normal way
-    // private val movieRepository =
-    //    MovieRepositoryImpl(
-    //        MovieRemoteDataSource(),
-    //        MovieLocalDataSource(application.applicationContext)
-    //    )
-    // private val getPopularMovies = GetPopularMoviesUseCase(movieRepository)
-
-    // Using Dragger Method
-    private val getPopularMovies =
-        (application as MovieApplication).appComponent.getPopularMoviesUseCase()
 
     init {
         fetchMovies()

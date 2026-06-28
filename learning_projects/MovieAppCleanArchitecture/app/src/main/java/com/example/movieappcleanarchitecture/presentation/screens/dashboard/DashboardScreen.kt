@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.movieappcleanarchitecture.presentation.components.LoadingIndicator
 import com.example.movieappcleanarchitecture.presentation.components.MovieError
 import com.example.movieappcleanarchitecture.presentation.components.MovieGrid
@@ -14,7 +14,7 @@ import com.example.movieappcleanarchitecture.presentation.models.DashboardUiStat
 
 @Composable
 fun DashboardScreen() {
-    val viewModel: DashboardViewModel = viewModel()
+    val viewModel: DashboardViewModel = hiltViewModel()
     val uiState by viewModel.uiState
 
     Column(

@@ -13,7 +13,9 @@ import androidx.compose.ui.res.colorResource
 import com.example.movieappcleanarchitecture.R
 import com.example.movieappcleanarchitecture.presentation.screens.dashboard.DashboardScreen
 import com.example.movieappcleanarchitecture.ui.theme.MovieAppCleanArchitectureTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

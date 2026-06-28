@@ -8,38 +8,42 @@ import com.example.movieappcleanarchitecture.data.repository.MovieRepositoryImpl
 import com.example.movieappcleanarchitecture.domain.usecase.GetPopularMoviesUseCase
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 
 /**
- * Dagger Module — the "recipe book" that tells Dagger HOW to create each dependency.
+ * DI module — the "recipe book" that tells the DI graph HOW to create each dependency.
  *
  * WHAT IS @Module?
  * - A class annotated with @Module contains methods that create objects.
- * - Dagger reads this class and learns: "To create a MovieRepository, I call provideMovieRepository()"
+ * - The DI framework reads this class and learns: "To create a MovieRepository, call provideMovieRepository()"
  *
  * WHAT IS @Provides?
  * - Each method annotated with @Provides creates ONE dependency.
- * - Dagger calls these methods automatically when something needs that type.
- * - The method parameters are dependencies too — Dagger will provide them.
+ * - The DI framework calls these methods automatically when something needs that type.
+ * - The method parameters are dependencies too — the framework will provide them.
  *
  * HOW IT WORKS:
  *   When someone needs GetPopularMoviesUseCase:
- *   1. Dagger sees provideGetPopularMoviesUseCase(repository) — needs a MovieRepository
- *   2. Dagger sees provideMovieRepository(remote, local) — needs RemoteDS and LocalDS
- *   3. Dagger sees provideMovieRemoteDataSource() — no dependencies, creates it
- *   4. Dagger sees provideMovieLocalDataSource(context) — needs Context
- *   5. Dagger gets Context from AppComponent
+ *   1. The graph sees provideGetPopularMoviesUseCase(repository) — needs a MovieRepository
+ *   2. The graph sees provideMovieRepository(remote, local) — needs RemoteDS and LocalDS
+ *   3. The graph sees provideMovieRemoteDataSource() — no dependencies, creates it
+ *   4. The graph sees provideMovieLocalDataSource(context) — needs Context
+ *   5. Hilt provides the application Context via @ApplicationContext
  *   6. Chains everything together automatically
  *
- * THIS IS THE SAME AS AppContainer — but Dagger automates the wiring:
+ * THIS IS THE SAME AS AppContainer — but DI automates the wiring:
  *
- *   AppContainer (manual):                    AppModule (Dagger):
+ *   AppContainer (manual):                    AppModule:
  *   val remoteDS = MovieRemoteDataSource()    @Provides fun provideRemoteDS() = MovieRemoteDataSource()
  *   val localDS = MovieLocalDataSource(ctx)   @Provides fun provideLocalDS(ctx) = MovieLocalDataSource(ctx)
  *   val repo = MovieRepositoryImpl(r, l)      @Provides fun provideRepo(r, l) = MovieRepositoryImpl(r, l)
  *   val useCase = GetPopularMoviesUseCase(r)  @Provides fun provideUseCase(r) = GetPopularMoviesUseCase(r)
  */
 @Module
-class AppModule {
+@InstallIn(SingletonComponent::class)
+object AppModule {
 
     @Provides
     fun provideMovieRemoteDataSource(): MovieRemoteDataSource {
@@ -47,7 +51,7 @@ class AppModule {
     }
 
     @Provides
-    fun provideMovieLocalDataSource(context: Context): MovieLocalDataSource {
+    fun provideMovieLocalDataSource(@ApplicationContext context: Context): MovieLocalDataSource {
         return MovieLocalDataSource(context)
     }
 
